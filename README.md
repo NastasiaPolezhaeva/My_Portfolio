@@ -38,12 +38,17 @@
 Просчитала сценарий, при котором Пропускная способность П увеличится на 15 процентов, а Retention П упадёт на 2 процента. И, наконец, 
 с помощью функции "Поиска решений" составила новый план найма с ограничением: за месяц нельзя нанять более 70 преподавателей.*
 
+
+[UNIT_CALCULATOR_ONLINE_SCHOOL](https://github.com/NastasiaPolezhaeva/My_Portfolio/tree/main/Project%201)
+
+
 **Выводы(итоги)**:
 
 **Итог №1**: Новое количество планируемых студентов с поправкой на коэфициент 12% (на листе Главный) и 
 возможность корректировать план маркетинга.
 
 **Итог №2**: Новый план найма преподавателей в соответствии с заданными условиями (на листе Найм План)
+_____
 
  ### Проект 2: Калькулятор юнит-экономики онлайн-кинотеатра
 
@@ -59,12 +64,14 @@
 
 2.*С помощью функции "Поиска решений" и столбца "Изменение" настроила параметры с условием выхода маржинальности на 25 %.*
 
-Ссылка на проект (ссылка должна содержать демонстративные материалы: скриншоты, таблички, запросы, код. Работодатель должен иметь возможность быстро посмотреть результаты работы)
+
+[UNIT_CALCULATOR_ONLINE_CINEMA](https://github.com/NastasiaPolezhaeva/My_Portfolio/tree/main/Project%202)
+
 
 **Выводы (итоги)**: Юнит-экономика продукта неэффективна и убыточна. Средняя маржинальность за период с мая по август 2021 года составила -90,45%. 
 Количество новых подписок уменьшается. Retention падает. Высокие расходы на маркетинг ( почти 50%), высокие фиксированные расходы ( 47%).
 Для выхода на получение 25-ти % маржинальности необходимо снизить средний CPA (он же CAC для нашего продукта) на 45%, повысить Retention не менее, чем на 7% и повысить стандартную цену подписки. 
-
+_____
 
 ### Проект 3: Когортный анализ онлайн-кинотеатра
 
@@ -76,10 +83,10 @@
 
 *Построила сводную таблицу с абсолютными доходимостями клиентов по месячным когортам, а затем таблицу с клиентским Retention. На основании Retention рассчитала лайфтайм с помощью метода усредненных прямоугольников для каждой когорты. Рассчитала LTR для каждой когорты с помощью ARPU (предположила, что ARPU = 300). Рассчитала LTV с помощью усредненных костов для каждой когорты.*
 
-Ссылка на проект (ссылка должна содержать демонстративные материалы: скриншоты, таблички, запросы, код. Работодатель должен иметь возможность быстро посмотреть результаты работы)
+[COHORT_ANALISIST](https://github.com/NastasiaPolezhaeva/My_Portfolio/tree/main/Project%203)
 
 **Выводы (итоги)**: Распределение хороших и плохих когорт с точки зрения LTV.
-
+____
 
 ### Проект 4: Построение витрины для модели машинного обучения в банке
 
@@ -111,10 +118,35 @@
 Как решала: 
 
 *С помощью подзапроса вывела требуемые поля; суммы и количества посчитала с помощью оконных функций; последним этапом расчитала запрашивемые доли.* 
+```SQL
+select c.*
+      ,amt_loan::float/sum_city as part_amt_city
+      ,amt_loan::float/sum_type as part_amt_type
+      ,amt_loan::float/sum_type_name as part_amt_type_name
+from (select a.id_client
+      ,b.name_city
+      ,case when a.gender = 'M' then 1 else 0 end as nflag_gender
+      ,age
+      ,first_time
+      ,case when cellphone is not null then 1 else 0 end as nflag_cellphone
+      ,is_active
+      ,cl_segm
+      ,amt_loan
+      ,date_loan::date
+      ,credit_type
+      ,sum(amt_loan) over(partition by name_city) as sum_city
+      ,sum(amt_loan) over(partition by credit_type) as sum_type
+      ,sum(amt_loan) over(partition by credit_type, name_city) as sum_type_name
+      ,count(amt_loan) over(partition by name_city) as cnt_credit_city
+      ,count(amt_loan) over(partition by credit_type) as cnt_credit_type
+      ,count(amt_loan) over(partition by credit_type, name_city) as cnt_credit_type_city
+from skybank.late_collection_clients a
+  left join skybank.region_dict b
+    on a.id_city = b.id_city) c
+```
 
-Ссылка на проект (ссылка должна содержать демонстративные материалы: скриншоты, таблички, запросы, код. Работодатель должен иметь возможность быстро посмотреть результаты работы)
-
-**Выводы (итоги)**: Готовая витрина
+**Выводы (итоги)**: Готовая витрина [SHOWCASE](https://metabase.sky.pro/question/64102)
+____
 
 ### Проект 5: Моделирование изменения балансов студентов
 
@@ -129,7 +161,95 @@
 
 *Использовала конструкцию CTE. Узнала, когда была первая транзакция для каждого студента. Собрала таблицу с датами за каждый календарный день 2016 года. Узнала, за какие даты имеет смысл собирать баланс для каждого студента (даты после первой успешной транзакции). Нашла все изменения балансов, связанные с успешными транзакциями (нашла все транзакции и сгруппировала по юзеру и дате). Нашла баланс студентов, сформированный только транзакциями - куммулятивная сумма балансов транзакций. Посчитала количество пройденных за каждый день уроков для каждого ученика,а также куммулятивную сумму этих уроков для каждого ученика. Вычислила балансы каждого студента ( объединила куммулятивные суммы количества транзакций и количества уроков). Сделала выводы.*
 
-Ссылка на проект (ссылка должна содержать демонстративные материалы: скриншоты, таблички, запросы, код. Работодатель должен иметь возможность быстро посмотреть результаты работы)
+```SQL
+with first_payments as
+     (select user_id
+            ,min(transaction_datetime)::date as first_payment_date
+      from skyeng_db.payments
+      where status_name = 'success'  
+      group by 1
+      order by 1
+      ),
+all_dates as
+     (select distinct (class_start_datetime)::date as dt
+      from skyeng_db.classes
+      where date_part('year', class_start_datetime) = '2016'
+      order by dt asc
+      ),
+all_dates_by_user as
+      (select user_id
+              ,dt
+       from  all_dates  
+         join first_payments 
+           on dt >= first_payment_date
+      ),
+payments_by_dates as
+       (select  user_id
+              ,transaction_datetime::date as payment_date
+              ,sum(classes) as transaction_balance_change
+        from skyeng_db.payments
+        where status_name = 'success'  
+        group by 1,2
+        order by user_id
+        ),
+payments_by_dates_cumsum as
+        (select adu.user_id
+                ,dt
+                ,coalesce(transaction_balance_change,0) as transaction_balance_change
+                ,sum(transaction_balance_change) over (partition by adu.user_id order by dt rows between unbounded preceding and current row) as transaction_balance_change_cs
+          from all_dates_by_user adu 
+            left join payments_by_dates pd 
+              on dt = payment_date
+              and adu.user_id = pd.user_id
+        ),
+classes_by_dates as
+        (select user_id
+            ,class_start_datetime::date as class_date
+            ,count(id_class)*-1 as classes
+         from skyeng_db.classes
+         where class_status in ('success', 'failed_by_student')
+               and class_type <> 'trial'
+         group by 1,2       
+        ),
+classes_by_dates_cumsum as
+        (select adu.user_id
+               ,dt
+               ,coalesce(classes,0) as classes
+               ,sum(classes) over (partition by adu.user_id order by dt rows between unbounded preceding and current row) as classes_cs
+          from all_dates_by_user adu 
+            left join classes_by_dates cd 
+              on dt = class_date
+              and adu.user_id = cd.user_id
+        ),
+balances as
+        (select pd_cs.user_id
+               ,pd_cs.dt
+               ,transaction_balance_change
+               ,transaction_balance_change_cs
+               ,classes
+               ,classes_cs
+               ,classes_cs + transaction_balance_change_cs as balance 
+         from payments_by_dates_cumsum pd_cs
+            join classes_by_dates_cumsum  cd_cs
+              on pd_cs.dt = cd_cs.dt
+              and pd_cs.user_id = cd_cs.user_id
+        )
+-- select *
+-- from balances
+-- order by 1,2
+-- limit 1000
+select dt
+      ,sum(transaction_balance_change) as sum_transaction_balance_change
+      ,sum(transaction_balance_change_cs) as sum_transaction_balance_change_cs
+      ,sum(classes) as sum_classes
+      ,sum(classes_cs) as sum_classes_cs
+      ,sum(balance) as sum_balance 
+from balances
+group by 1 
+order by 1 
+
+```
+[BALANCE](https://metabase.sky.pro/question/64839)
 
 **Выводы**:
 
@@ -142,7 +262,8 @@
               <p>-рост кумулятивной суммы транзакций (на конец года составляет 21 798) <p>
               <p>-рост баланса к концу 2016 года 4 126, то есть студенты продолжают покупать уроки на следующий год <p>
               <p>-опираясь на кривую sum_classes можно сделать вывод, что студенты предпочитают проходить уроки в будние дни, а в праздники и выходные наблюдается снижение количества проходимых уроков. <p>
-             
+____
+               
 ## Контактная информация
 Email: nastasya_polezhayeva@list.ru
 
