@@ -86,6 +86,7 @@ _____
 [COHORT_ANALISIST](https://github.com/NastasiaPolezhaeva/My_Portfolio/tree/main/Project%203)
 
 **Выводы (итоги)**: Распределение хороших и плохих когорт с точки зрения LTV.
+![COHORTA](https://github.com/NastasiaPolezhaeva/My_Portfolio/blob/main/Project%203/COHORTA.jpg)
 ____
 
 ### Проект 4: Построение витрины для модели машинного обучения в банке
